@@ -1,5 +1,7 @@
 package com.FitnessTrackingApp.ui;
 import com.FitnessTrackingApp.services.LoginDAO;
+import com.FitnessTrackingApp.services.Users;
+import com.FitnessTrackingApp.services.ThisUser;
 
 
 import javafx.scene.control.Alert;
