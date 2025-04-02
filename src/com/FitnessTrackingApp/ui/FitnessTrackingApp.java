@@ -1,7 +1,8 @@
 package com.FitnessTrackingApp.ui;
+import com.FitnessTrackingApp.services.LoginDAO;
 
 
-
+import javafx.scene.control.Alert;
 import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -398,7 +399,8 @@ public class FitnessTrackingApp extends Application {
         Scene forgotPasswordScene = new Scene(forgotPasswordLayout, 600, 800);
         primaryStage.setScene(forgotPasswordScene);
     }
-    
+ 
+
     private void showPasswordResetPage() {
         VBox passwordResetLayout = createPage("Password Reset Page");
         Label logo = new Label("Fitness Tracking App");
