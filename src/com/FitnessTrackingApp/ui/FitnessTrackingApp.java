@@ -3,7 +3,11 @@ import com.FitnessTrackingApp.services.LoginDAO;
 import com.FitnessTrackingApp.services.Users;
 import com.FitnessTrackingApp.services.ThisUser;
 
-
+import java.util.List;
+import javafx.collections.ObservableList;
+import javafx.collections.FXCollections;
+import java.util.Map;
+import java.util.HashMap;
 import javafx.scene.control.Alert;
 import javafx.application.Application;
 import javafx.geometry.Insets;
@@ -137,7 +141,7 @@ public class FitnessTrackingApp extends Application {
         }
     });
 
-        // Layout
+       
         VBox layout = new VBox(10);
         layout.setAlignment(Pos.CENTER);
         layout.setPadding(new Insets(20));
@@ -159,7 +163,7 @@ public class FitnessTrackingApp extends Application {
             }
         });
 
-        // Sets the scene size
+        
         Scene scene = new Scene(layout, 600, 800);
         primaryStage.setScene(scene);
         primaryStage.show();
@@ -167,9 +171,48 @@ public class FitnessTrackingApp extends Application {
 
     // METHODS FOR EACH PAGE (still incomplete) 
     private void showEnthusiastPage() {
-	VBox enthusiastLayout = createPage("Welcome, Enthusiast!");
-	Scene enthusiastScene = new Scene(enthusiastLayout, 600, 800);
-	primaryStage.setScene(enthusiastScene);
+        Label titleLabel = new Label("Hello, " + ThisUser.getInstance().getCurrentUsername());
+        titleLabel.setStyle("-fx-font-size: 20px; -fx-font-weight: bold;");
+
+        HBox titleBox = new HBox(titleLabel);
+        titleBox.setAlignment(Pos.CENTER);
+        titleBox.setPadding(new Insets(10));
+
+        Button workoutHistoryBtn = new Button("Workout History & Progress");
+        workoutHistoryBtn.setPrefSize(200, 100);
+        workoutHistoryBtn.setOnAction(e -> showWorkoutHistoryPage());
+
+        Button workoutPlansBtn = new Button("Workout Plans");
+        workoutPlansBtn.setPrefSize(200, 100);
+        workoutPlansBtn.setOnAction(e -> showWorkoutPlansPage1());
+
+        Button subscriptionsBtn = new Button("Subscriptions");
+        subscriptionsBtn.setPrefSize(200, 100);
+        subscriptionsBtn.setOnAction(e -> showSubscriptionsPage());
+
+        Button profileManagementBtn = new Button("Profile Management");
+        profileManagementBtn.setPrefSize(200, 100);
+        profileManagementBtn.setOnAction(e -> showProfileManagementUserPage());
+
+        GridPane gridPane = new GridPane();
+        gridPane.setHgap(20);
+        gridPane.setVgap(20);
+        gridPane.setAlignment(Pos.CENTER);
+
+        gridPane.add(workoutHistoryBtn, 0, 0);
+        gridPane.add(workoutPlansBtn, 1, 0);
+        gridPane.add(subscriptionsBtn, 0, 1);
+        gridPane.add(profileManagementBtn, 1, 1);
+
+        StackPane backButton = createBackButton();
+        backButton.setOnMouseClicked(e -> showHomePage());
+
+        VBox enthusiastLayout = new VBox(20, backButton, titleBox, gridPane);
+        enthusiastLayout.setAlignment(Pos.TOP_CENTER);
+        enthusiastLayout.setPadding(new Insets(20));
+
+        Scene enthusiastScene = new Scene(enthusiastLayout, 600, 800);
+        primaryStage.setScene(enthusiastScene);
     }
 
     private void showTrainerPage() {
@@ -217,9 +260,48 @@ public class FitnessTrackingApp extends Application {
     }
 
     private void showAdminPage() {
-	VBox trainerLayout = createPage("Welcome, Admin!");
-	Scene trainerScene = new Scene(trainerLayout, 600, 800);
-	primaryStage.setScene(trainerScene);
+	Label titleLabel = new Label("Hello, " + ThisUser.getInstance().getCurrentUsername());
+        titleLabel.setStyle("-fx-font-size: 20px; -fx-font-weight: bold;");
+
+        HBox titleBox = new HBox(titleLabel);
+        titleBox.setAlignment(Pos.CENTER);
+        titleBox.setPadding(new Insets(10));
+
+        Button workoutHistoryBtn = new Button("Manage Users");
+        workoutHistoryBtn.setPrefSize(200, 100);
+        workoutHistoryBtn.setOnAction(e -> showWorkoutHistoryPage());
+
+        Button workoutPlansBtn = new Button("Manage Workout Plans & Subscriptions");
+        workoutPlansBtn.setPrefSize(200, 100);
+        workoutPlansBtn.setOnAction(e -> showWorkoutPlansPage1());
+
+        Button subscriptionsBtn = new Button("User Progress & Trainer Performance");
+        subscriptionsBtn.setPrefSize(200, 100);
+        subscriptionsBtn.setOnAction(e -> showSubscriptionsPage());
+
+        Button profileManagementBtn = new Button("Generate Reports");
+        profileManagementBtn.setPrefSize(200, 100);
+        profileManagementBtn.setOnAction(e -> showProfileManagementUserPage());
+
+        GridPane gridPane = new GridPane();
+        gridPane.setHgap(20);
+        gridPane.setVgap(20);
+        gridPane.setAlignment(Pos.CENTER);
+
+        gridPane.add(workoutHistoryBtn, 0, 0);
+        gridPane.add(workoutPlansBtn, 1, 0);
+        gridPane.add(subscriptionsBtn, 0, 1);
+        gridPane.add(profileManagementBtn, 1, 1);
+
+        StackPane backButton = createBackButton();
+        backButton.setOnMouseClicked(e -> showHomePage());
+
+        VBox enthusiastLayout = new VBox(20, backButton, titleBox, gridPane);
+        enthusiastLayout.setAlignment(Pos.TOP_CENTER);
+        enthusiastLayout.setPadding(new Insets(20));
+
+        Scene AdminScene = new Scene(enthusiastLayout, 600, 800);
+        primaryStage.setScene(AdminScene);
     }
 
     private void showCreateAccountPage() {
@@ -473,29 +555,313 @@ public class FitnessTrackingApp extends Application {
         primaryStage.setScene(passwordResetScene);
     }
     // FITNESS ENTHUSIAST PAGES
-    private void showWorkoutHistoryPage() {
-	VBox workoutHistoryLayout = createPage("Workout History & Progress");
-	Scene workoutHistoryScene = new Scene(workoutHistoryLayout, 600, 800);
-	primaryStage.setScene(workoutHistoryScene);
+    
+   
+     
+     private void showWorkoutHistoryPage() {
+        Label title = new Label("Workout History & Progress");
+	title.setStyle("-fx-font-size: 18px; -fx-font-weight: bold;");
+
+	StackPane backButton = createBackButton();
+	backButton.setOnMouseClicked(e -> showTrainerPage());
+
+	GridPane progressGrid = new GridPane();
+	progressGrid.setHgap(10);
+	progressGrid.setVgap(10);
+	progressGrid.setAlignment(Pos.CENTER);
+
+	Label subscribersLabel = new Label("Trainers");
+	Label typeLabel = new Label("Type of Workout");
+	Label timesCompleted = new Label("Times completed");
+
+	progressGrid.add(subscribersLabel, 0, 0);
+	progressGrid.add(typeLabel, 1, 0);
+	progressGrid.add(timesCompleted, 2, 0);
+
+	for (int i = 1; i < 5; i++) {
+	    progressGrid.add(new Label("Username"), 0, i);
+	    progressGrid.add(new Label("Placeholder"), 1, i);
+	    progressGrid.add(new Label("Placeholder"), 2, i);
+	}
+
+	VBox workoutHistoryLayout = new VBox(10, backButton, title, progressGrid);
+	workoutHistoryLayout.setAlignment(Pos.CENTER);
+	workoutHistoryLayout.setPadding(new Insets(20));
+
+        Scene workoutHistoryScene = new Scene(workoutHistoryLayout, 600, 800);
+        primaryStage.setScene(workoutHistoryScene);
     }
+    
+   
+    
+    private ObservableList<String> subscribedTrainers = FXCollections.observableArrayList();
+    private Map<String, Integer> workoutCompletionCounts = new HashMap<>();
 
     private void showWorkoutPlansPage1() {
-	VBox workoutPlansLayout1 = createPage("Workout Plans");
-	Scene workoutPlansScene1 = new Scene(workoutPlansLayout1, 600, 800);
-	primaryStage.setScene(workoutPlansScene1);
+        VBox mainLayout = new VBox(10);
+        mainLayout.setPadding(new Insets(20));
+
+        StackPane backButton = createBackButton();
+        backButton.setOnMouseClicked(e -> showEnthusiastPage());
+
+        Label titleLabel = new Label("Workout Plans");
+        titleLabel.setStyle("-fx-font-size: 20px; -fx-font-weight: bold;");
+
+        HBox headerBox = new HBox(10, backButton, titleLabel);
+        headerBox.setAlignment(Pos.CENTER_LEFT);
+
+        GridPane contentGrid = new GridPane();
+        contentGrid.setHgap(20);
+        contentGrid.setVgap(10);
+        contentGrid.setPadding(new Insets(20));
+
+        Label trainersLabel = new Label("Subscribed Trainers");
+        trainersLabel.setStyle("-fx-font-weight: bold;");
+        VBox trainersColumn = new VBox(10, trainersLabel);
+
+        Label workoutTypeLabel = new Label("Select Workout Type");
+        workoutTypeLabel.setStyle("-fx-font-weight: bold;");
+
+        ComboBox<String> workoutTypeDropdown = new ComboBox<>();
+        workoutTypeDropdown.getItems().addAll("Weight Loss", "Balanced", "Strength Training");
+
+        VBox workoutTypeColumn = new VBox(10, workoutTypeLabel, workoutTypeDropdown);
+
+        Label completionLabel = new Label("Times Completed");
+        completionLabel.setStyle("-fx-font-weight: bold;");
+
+        VBox completionColumn = new VBox(10, completionLabel);
+
+        contentGrid.add(trainersColumn, 0, 0);
+        contentGrid.add(workoutTypeColumn, 1, 0);
+        contentGrid.add(completionColumn, 2, 0);
+
+        VBox plansListContainer = new VBox(10);
+        ScrollPane scrollPane = new ScrollPane(plansListContainer);
+        scrollPane.setFitToWidth(true);
+        scrollPane.setPrefHeight(400);
+
+        contentGrid.add(scrollPane, 0, 1, 3, 1); 
+
+        for(String trainer : subscribedTrainers) {
+            trainersColumn.getChildren().add(new Label(trainer));
+        }
+
+        workoutTypeDropdown.setOnAction(e -> {
+            plansListContainer.getChildren().clear();
+            String selectedType = workoutTypeDropdown.getValue();
+
+            if(selectedType != null) {
+                HBox planHeader = new HBox(10);
+                planHeader.getChildren().addAll(
+                    new Label("Trainer"),
+                    new Label("Action"),
+                    new Label("Completed")
+                );
+                plansListContainer.getChildren().add(planHeader);
+
+                for(String trainer : subscribedTrainers) {
+                    HBox planEntry = new HBox(10);
+                    planEntry.setAlignment(Pos.CENTER_LEFT);
+
+                    Label trainerLabel = new Label(trainer);
+
+                    String workoutKey = ThisUser.getInstance().getCurrentUsername() + "_" + 
+                                      trainer + "_" + selectedType;
+                    int count = workoutCompletionCounts.getOrDefault(workoutKey, 0);
+                    Label countLabel = new Label(String.valueOf(count));
+
+                    Button selectButton = new Button("Select Plan");
+                    selectButton.setOnAction(event -> {
+                        showWorkoutPlanPage2(trainer, selectedType);
+                    });
+
+                    planEntry.getChildren().addAll(trainerLabel, selectButton, countLabel);
+                    plansListContainer.getChildren().add(planEntry);
+                }
+            }
+        });
+
+        mainLayout.getChildren().addAll(headerBox, contentGrid);
+
+        Scene scene = new Scene(mainLayout, 600, 800);
+        primaryStage.setScene(scene);
     }
 
-    private void showWorkoutPlansPage2() {
-	VBox workoutPlansLayout2 = createPage("Workout Plans");
-	Scene workoutPlansScene2 = new Scene(workoutPlansLayout2, 600, 800);
-	primaryStage.setScene(workoutPlansScene2);
+
+    private void showWorkoutPlanPage2(String trainer, String workoutType) {
+	Label title = new Label("Workout Plan");
+	title.setStyle("-fx-font-size: 18px; -fx-font-weight: bold;");
+
+	StackPane backButton = createBackButton();
+	backButton.setOnMouseClicked(e -> showEnthusiastPage());
+
+	GridPane workoutGrid = new GridPane();
+	workoutGrid.setHgap(10);
+	workoutGrid.setVgap(10);
+	workoutGrid.setAlignment(Pos.CENTER);
+
+	workoutGrid.add(new Label("Complete?"), 0, 0);
+	workoutGrid.add(new Label("Exercise"), 1, 0);
+	workoutGrid.add(new Label("No. of Reps"), 2, 0);
+	workoutGrid.add(new Label("No. of Sets"), 3, 0);
+
+	for (int i = 1; i <= 5; i++) {
+	    CheckBox completeCheckBox = new CheckBox();
+	    workoutGrid.add(completeCheckBox, 0, i);
+
+	    TextField exerciseField = new TextField();
+	    exerciseField.setEditable(false); 
+	    workoutGrid.add(exerciseField, 1, i);
+
+	    TextField repsField = new TextField();
+	    repsField.setEditable(false); 
+	    workoutGrid.add(repsField, 2, i);
+
+	    TextField setsField = new TextField();
+	    setsField.setEditable(false);
+	    workoutGrid.add(setsField, 3, i);
+	}
+
+	Button completeWorkoutButton = new Button("Complete Workout");
+
+	VBox workoutPlanLayout = new VBox(10, backButton, title, workoutGrid, completeWorkoutButton);
+	workoutPlanLayout.setAlignment(Pos.CENTER);
+	workoutPlanLayout.setPadding(new Insets(20));
+
+	Scene workoutPlanScene = new Scene(workoutPlanLayout, 600, 800);
+	primaryStage.setScene(workoutPlanScene);
     }
 
     private void showSubscriptionsPage() {
-	VBox SubscriptionsLayout = createPage("Subscriptions");
-	Scene SubscriptionsScene = new Scene(SubscriptionsLayout, 600, 800);
-	primaryStage.setScene(SubscriptionsScene);
+        VBox mainLayout = new VBox(10);
+        mainLayout.setPadding(new Insets(20));
+
+        StackPane backButton = createBackButton();
+        backButton.setOnMouseClicked(e -> showEnthusiastPage());
+
+        Label titleLabel = new Label("Manage Subscriptions");
+        titleLabel.setStyle("-fx-font-size: 20px; -fx-font-weight: bold;");
+
+        HBox headerBox = new HBox(10, backButton, titleLabel);
+        headerBox.setAlignment(Pos.CENTER_LEFT);
+
+        GridPane contentGrid = new GridPane();
+        contentGrid.setHgap(20);
+        contentGrid.setVgap(10);
+        contentGrid.setPadding(new Insets(20));
+
+        // Column headers
+        Label trainerLabel = new Label("Trainer");
+        trainerLabel.setStyle("-fx-font-weight: bold;");
+
+        Label subscribeLabel = new Label("Subscribe");
+        subscribeLabel.setStyle("-fx-font-weight: bold;");
+
+        Label unsubscribeLabel = new Label("Unsubscribe");
+        unsubscribeLabel.setStyle("-fx-font-weight: bold;");
+
+        contentGrid.add(trainerLabel, 0, 0);
+        contentGrid.add(subscribeLabel, 1, 0);
+        contentGrid.add(unsubscribeLabel, 2, 0);
+
+        // sample trainers ( will be reaplced with real trainers later on)
+        List<String> allTrainers = getAvailableTrainers();  
+
+        int rowIndex = 1;
+        for(String trainer : allTrainers) {
+            Label trainerName = new Label(trainer);
+
+            Button subscribeBtn = new Button("Subscribe");
+            subscribeBtn.setStyle("-fx-background-color: #4CAF50; -fx-text-fill: white;");
+            subscribeBtn.setOnAction(e -> {
+                if(!subscribedTrainers.contains(trainer)) {
+                    subscribedTrainers.add(trainer);
+                    updateSubscriptionDisplay(contentGrid, allTrainers);
+                }
+            });
+
+            Button unsubscribeBtn = new Button("Unsubscribe");
+            unsubscribeBtn.setStyle("-fx-background-color: #f44336; -fx-text-fill: white;");
+            unsubscribeBtn.setOnAction(e -> {
+                subscribedTrainers.remove(trainer);
+                updateSubscriptionDisplay(contentGrid, allTrainers);
+            });
+
+            if(subscribedTrainers.contains(trainer)) {
+                subscribeBtn.setDisable(true);
+                unsubscribeBtn.setDisable(false);
+            } else {
+                subscribeBtn.setDisable(false);
+                unsubscribeBtn.setDisable(true);
+            }
+
+            contentGrid.add(trainerName, 0, rowIndex);
+            contentGrid.add(subscribeBtn, 1, rowIndex);
+            contentGrid.add(unsubscribeBtn, 2, rowIndex);
+
+            rowIndex++;
+        }
+
+        mainLayout.getChildren().addAll(headerBox, contentGrid);
+
+        Scene scene = new Scene(mainLayout, 600, 800);
+        primaryStage.setScene(scene);
     }
+
+    private void updateSubscriptionDisplay(GridPane contentGrid, List<String> allTrainers) {
+        contentGrid.getChildren().clear();
+
+        contentGrid.add(new Label("Trainer"), 0, 0);
+        contentGrid.add(new Label("Subscribe"), 1, 0);
+        contentGrid.add(new Label("Unsubscribe"), 2, 0);
+
+        int rowIndex = 1;
+        for(String trainer : allTrainers) {
+            Label trainerName = new Label(trainer);
+
+            Button subscribeBtn = new Button("Subscribe");
+            subscribeBtn.setStyle("-fx-background-color: #4CAF50; -fx-text-fill: white;");
+            subscribeBtn.setOnAction(e -> {
+                subscribedTrainers.add(trainer);
+                updateSubscriptionDisplay(contentGrid, allTrainers);
+            });
+
+            Button unsubscribeBtn = new Button("Unsubscribe");
+            unsubscribeBtn.setStyle("-fx-background-color: #f44336; -fx-text-fill: white;");
+            unsubscribeBtn.setOnAction(e -> {
+                subscribedTrainers.remove(trainer);
+                updateSubscriptionDisplay(contentGrid, allTrainers);
+            });
+
+            if(subscribedTrainers.contains(trainer)) {
+                subscribeBtn.setDisable(true);
+                unsubscribeBtn.setDisable(false);
+            } else {
+                subscribeBtn.setDisable(false);
+                unsubscribeBtn.setDisable(true);
+            }
+
+            contentGrid.add(trainerName, 0, rowIndex);
+            contentGrid.add(subscribeBtn, 1, rowIndex);
+            contentGrid.add(unsubscribeBtn, 2, rowIndex);
+
+            rowIndex++;
+        }
+    }
+
+        // to be implemented with database eventually
+    private List<String> getAvailableTrainers() {
+        // sample trainers for now, will be reaplced with real database trainers later
+        return FXCollections.observableArrayList(
+            "Trainer1",
+            "Trainer2",
+            "Trainer3",
+            "Trainer4",
+            "Trainer5"
+        );
+    }
+
 
     private void showProfileManagementUserPage() {
         VBox ProfileManagementUserLayout = createPage("Profile Management");
@@ -634,7 +1000,6 @@ public class FitnessTrackingApp extends Application {
 	workoutGrid.setVgap(10);
 	workoutGrid.setAlignment(Pos.CENTER);
 
-	// Adding headers
 	workoutGrid.add(new Label("Exercise"), 0, 0);
 	workoutGrid.add(new Label("No. of Reps"), 1, 0);
 	workoutGrid.add(new Label("No. of Sets"), 2, 0);
@@ -757,17 +1122,14 @@ public class FitnessTrackingApp extends Application {
         return null;
     }
     
-    // Helper method to create pages with a back button
     private VBox createPage(String pageTitle) {
 
 	StackPane backButton = createBackButton();
 	backButton.setOnMouseClicked(e -> showTrainerPage());
 
-	// Page title
 	Label pageLabel = new Label(pageTitle);
 	pageLabel.setStyle("-fx-font-size: 20px;");
 
-	// Layout for the page
 	VBox pageLayout = new VBox(10, backButton, pageLabel);
 	pageLayout.setAlignment(Pos.CENTER);
 	pageLayout.setPadding(new Insets(20));
@@ -785,7 +1147,6 @@ public class FitnessTrackingApp extends Application {
 		);
 	triangle.setFill(Color.BLUE);
 
-	// Create a StackPane to hold the triangle and handle events
 	StackPane backButton = new StackPane(triangle);
 	backButton.setPadding(new Insets(10));
 	backButton.setAlignment(Pos.TOP_LEFT); 

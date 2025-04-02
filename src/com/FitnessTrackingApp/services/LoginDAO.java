@@ -1,6 +1,5 @@
 package com.FitnessTrackingApp.services;
 
-
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
 import java.sql.*;
