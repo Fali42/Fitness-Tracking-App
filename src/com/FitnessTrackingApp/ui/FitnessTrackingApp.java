@@ -184,7 +184,7 @@ public class FitnessTrackingApp extends Application {
 	primaryStage.show();
     }
 
-    // METHODS FOR EACH PAGE (still incomplete) 
+    // METHODS FOR EACH PAGE
     private void showEnthusiastPage() {
 	Label titleLabel = new Label("Hello, " + current.getCurrentUsername());
 	titleLabel.setStyle("-fx-font-size: 20px; -fx-font-weight: bold;");
@@ -868,7 +868,7 @@ public class FitnessTrackingApp extends Application {
 	contentGrid.setVgap(10);
 	contentGrid.setPadding(new Insets(20));
 
-	// Column headers
+	
 	Label trainerLabel = new Label("Trainer");
 	trainerLabel.setStyle("-fx-font-weight: bold;");
 
@@ -882,7 +882,7 @@ public class FitnessTrackingApp extends Application {
 	contentGrid.add(subscribeLabel, 1, 0);
 	contentGrid.add(unsubscribeLabel, 2, 0);
 
-	// sample trainers ( will be reaplced with real trainers later on)
+	
 	List<String> allTrainers = getAvailableTrainers();  
 
 	int rowIndex = 1;
@@ -978,7 +978,7 @@ public class FitnessTrackingApp extends Application {
 
 
     private void showProfileManagementUserPage() {
-	// VBox ProfileManagementUserLayout = createPage("Profile Management");
+	VBox ProfileManagementUserLayout = createPage("Profile Management");
 	Label logo = new Label("Profile Management");
 	logo.setStyle("-fx-font-size: 24px; -fx-font-weight: bold;");
 
@@ -1002,7 +1002,7 @@ public class FitnessTrackingApp extends Application {
 	Button updateBtn = new Button("Update");
 	Button logoutBtn = new Button("Logout");
 
-	VBox ProfileManagementUserLayout = new VBox(10);
+	
 	ProfileManagementUserLayout.setAlignment(Pos.CENTER);
 	ProfileManagementUserLayout.setPadding(new Insets(20));
 
