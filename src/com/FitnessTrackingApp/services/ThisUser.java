@@ -8,7 +8,14 @@ public class ThisUser {
     private String username;
     private String password;
 
-    private ThisUser() {
+    public ThisUser() {
+	this.username = null;
+	this.password = null;
+    }
+    
+    public ThisUser(String username, String password) {
+	this.username = username;
+	this.password = password;
     }
 
     public static ThisUser getInstance() {
@@ -55,4 +62,3 @@ public class ThisUser {
     }
 
 }
-
