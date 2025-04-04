@@ -715,95 +715,80 @@ public class FitnessTrackingApp extends Application {
     private Map<String, Integer> workoutCompletionCounts = new HashMap<>();
 
     private void showWorkoutPlansPage1() {
-	VBox mainLayout = new VBox(10);
-	mainLayout.setPadding(new Insets(20));
+        VBox mainLayout = new VBox(10);
+        mainLayout.setPadding(new Insets(20));
 
-	StackPane backButton = createBackButton();
-	backButton.setOnMouseClicked(e -> showEnthusiastPage());
+        StackPane backButton = createBackButton();
+        backButton.setOnMouseClicked(e -> showEnthusiastPage());
 
-	Label titleLabel = new Label("Workout Plans");
-	titleLabel.setStyle("-fx-font-size: 20px; -fx-font-weight: bold;");
+        Label titleLabel = new Label("Workout Plans");
+        titleLabel.setStyle("-fx-font-size: 20px; -fx-font-weight: bold;");
 
-	HBox headerBox = new HBox(10, backButton, titleLabel);
-	headerBox.setAlignment(Pos.CENTER_LEFT);
+        HBox headerBox = new HBox(10, backButton, titleLabel);
+        headerBox.setAlignment(Pos.CENTER_LEFT);
 
-	GridPane contentGrid = new GridPane();
-	contentGrid.setHgap(20);
-	contentGrid.setVgap(10);
-	contentGrid.setPadding(new Insets(20));
+        GridPane contentGrid = new GridPane();
+        contentGrid.setHgap(20);
+        contentGrid.setVgap(10);
+        contentGrid.setPadding(new Insets(20));
 
-	Label trainersLabel = new Label("Subscribed Trainers");
-	trainersLabel.setStyle("-fx-font-weight: bold;");
-	VBox trainersColumn = new VBox(10, trainersLabel);
+        Label trainersLabel = new Label("Subscribed Trainers");
+        trainersLabel.setStyle("-fx-font-weight: bold;");
+        VBox trainersColumn = new VBox(10, trainersLabel);
 
-	Label workoutTypeLabel = new Label("Select Workout Type");
-	workoutTypeLabel.setStyle("-fx-font-weight: bold;");
+        Label workoutTypeLabel = new Label("Select Workout Type");
+        workoutTypeLabel.setStyle("-fx-font-weight: bold;");
 
-	ComboBox<String> workoutTypeDropdown = new ComboBox<>();
-	workoutTypeDropdown.getItems().addAll("Weight Loss", "Balanced", "Strength Training");
+        ComboBox<String> workoutTypeDropdown = new ComboBox<>();
+        workoutTypeDropdown.getItems().addAll("Weight Loss", "Balanced", "Strength Training");
 
-	VBox workoutTypeColumn = new VBox(10, workoutTypeLabel, workoutTypeDropdown);
+        VBox workoutTypeColumn = new VBox(10, workoutTypeLabel, workoutTypeDropdown);
 
-	Label completionLabel = new Label("Times Completed");
-	completionLabel.setStyle("-fx-font-weight: bold;");
+        contentGrid.add(trainersColumn, 0, 0);
+        contentGrid.add(workoutTypeColumn, 1, 0);
 
-	VBox completionColumn = new VBox(10, completionLabel);
+        VBox plansListContainer = new VBox(10);
+        ScrollPane scrollPane = new ScrollPane(plansListContainer);
+        scrollPane.setFitToWidth(true);
+        scrollPane.setPrefHeight(400);
 
-	contentGrid.add(trainersColumn, 0, 0);
-	contentGrid.add(workoutTypeColumn, 1, 0);
-	contentGrid.add(completionColumn, 2, 0);
+        contentGrid.add(scrollPane, 0, 1, 2, 1);
 
-	VBox plansListContainer = new VBox(10);
-	ScrollPane scrollPane = new ScrollPane(plansListContainer);
-	scrollPane.setFitToWidth(true);
-	scrollPane.setPrefHeight(400);
+        for (String trainer : subscribedTrainers) {
+            trainersColumn.getChildren().add(new Label(trainer));
+        }
 
-	contentGrid.add(scrollPane, 0, 1, 3, 1); 
+        workoutTypeDropdown.setOnAction(e -> {
+            plansListContainer.getChildren().clear();
+            String selectedType = workoutTypeDropdown.getValue();
 
-	for(String trainer : subscribedTrainers) {
-	    trainersColumn.getChildren().add(new Label(trainer));
-	}
+            if (selectedType != null) {
+                for (String trainer : subscribedTrainers) {
+                    HBox planEntry = new HBox(20);
+                    planEntry.setAlignment(Pos.CENTER_LEFT);
 
-	workoutTypeDropdown.setOnAction(e -> {
-	    plansListContainer.getChildren().clear();
-	    String selectedType = workoutTypeDropdown.getValue();
+                    Label trainerLabel = new Label(trainer);
 
-	    if(selectedType != null) {
-		HBox planHeader = new HBox(10);
-		planHeader.getChildren().addAll(
-			new Label("Trainer"),
-			new Label("Action"),
-			new Label("Completed")
-			);
-		plansListContainer.getChildren().add(planHeader);
+                    String workoutKey = ThisUser.getInstance().getCurrentUsername() + "_" + 
+                                        trainer + "_" + selectedType;
+                    int count = workoutCompletionCounts.getOrDefault(workoutKey, 0);
+                    Label countLabel = new Label("Completed: " + count + " times");
 
-		for(String trainer : subscribedTrainers) {
-		    HBox planEntry = new HBox(10);
-		    planEntry.setAlignment(Pos.CENTER_LEFT);
+                    Button selectButton = new Button("Select Plan");
+                    selectButton.setOnAction(event -> showWorkoutPlanPage2(trainer, selectedType));
 
-		    Label trainerLabel = new Label(trainer);
+                    planEntry.getChildren().addAll(trainerLabel, selectButton, countLabel);
+                    plansListContainer.getChildren().add(planEntry);
+                }
+            }
+        });
 
-		    String workoutKey = ThisUser.getInstance().getCurrentUsername() + "_" + 
-			    trainer + "_" + selectedType;
-		    int count = workoutCompletionCounts.getOrDefault(workoutKey, 0);
-		    Label countLabel = new Label(String.valueOf(count));
+        mainLayout.getChildren().addAll(headerBox, contentGrid);
 
-		    Button selectButton = new Button("Select Plan");
-		    selectButton.setOnAction(event -> {
-			showWorkoutPlanPage2(trainer, selectedType);
-		    });
-
-		    planEntry.getChildren().addAll(trainerLabel, selectButton, countLabel);
-		    plansListContainer.getChildren().add(planEntry);
-		}
-	    }
-	});
-
-	mainLayout.getChildren().addAll(headerBox, contentGrid);
-
-	Scene scene = new Scene(mainLayout, 600, 800);
-	primaryStage.setScene(scene);
+        Scene scene = new Scene(mainLayout, 600, 800);
+        primaryStage.setScene(scene);
     }
+
 
 
     private void showWorkoutPlanPage2(String trainer, String workoutType) {
@@ -983,7 +968,7 @@ public class FitnessTrackingApp extends Application {
 	logo.setStyle("-fx-font-size: 24px; -fx-font-weight: bold;");
 
 	StackPane backButton = createBackButton();
-	backButton.setOnMouseClicked(e -> showEnthusiastPage());
+        backButton.setOnMouseClicked(e -> showEnthusiastPage());
 
 	Label nameLabel = new Label("Full Name");
 	TextField nameField = new TextField();
@@ -1024,7 +1009,7 @@ public class FitnessTrackingApp extends Application {
 	logoutBtnLine.setAlignment(Pos.CENTER);
 
 	ProfileManagementUserLayout.getChildren().addAll(
-		backButton, logo, nameLine, birthdayLine, genderLine, heightLine, weightLine, fitnessGoalsLine,
+		nameLine, birthdayLine, genderLine, heightLine, weightLine, fitnessGoalsLine,
 		updateBtnLine, logoutBtnLine
 		);
 
