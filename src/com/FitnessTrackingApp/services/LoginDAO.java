@@ -3,6 +3,8 @@ package com.FitnessTrackingApp.services;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class LoginDAO {
     private static Connection connection;
@@ -391,4 +393,23 @@ public class LoginDAO {
 	}
 	return -1;
     }
+    
+    public List<String> getAllTrainerUsernames() {
+        List<String> trainers = new ArrayList<>(); 
+        String query = "Select from trainers"; 
+
+        try (PreparedStatement ps = connection.prepareStatement(query);
+             ResultSet rs = ps.executeQuery()) { 
+            while (rs.next()) {
+                trainers.add(rs.getString("username")); 
+            }
+        } catch (SQLException e) { 
+            e.printStackTrace(); 
+        }
+
+        return trainers; 
+    }
 }
+
+
+    

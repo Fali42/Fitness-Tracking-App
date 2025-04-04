@@ -11,6 +11,8 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.util.HashMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.scene.control.Alert;
 import javafx.application.Application;
 import javafx.geometry.Insets;
@@ -201,7 +203,13 @@ public class FitnessTrackingApp extends Application {
 
 	Button subscriptionsBtn = new Button("Subscriptions");
 	subscriptionsBtn.setPrefSize(200, 100);
-	subscriptionsBtn.setOnAction(e -> showSubscriptionsPage());
+	subscriptionsBtn.setOnAction(e -> {
+            try {
+                showSubscriptionsPage();
+            } catch (Exception ex) {
+                Logger.getLogger(FitnessTrackingApp.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        });
 
 	Button profileManagementBtn = new Button("Profile Management");
 	profileManagementBtn.setPrefSize(200, 100);
@@ -396,183 +404,203 @@ public class FitnessTrackingApp extends Application {
     }
 
     private void showCreateAccountPage() {
-	VBox createAccountLayout = createPage("Welcome, Create Account!");
+        GridPane createAccountLayout = new GridPane();
+        createAccountLayout.setAlignment(Pos.CENTER);
+        createAccountLayout.setHgap(20);
+        createAccountLayout.setVgap(20);
 
-	Button createEnthusiastBtn = new Button("Fitness Enthusiast");
-	Button createTrainerBtn = new Button("Fitness Trainer");
-	Button createAdminBtn = new Button("Fitness Admin");
-	Label logo = new Label("Fitness Tracking App");
-	logo.setStyle("-fx-font-size: 24px; -fx-font-weight: bold;");
-	Label description = new Label("Would you like to create an Account as a Fitness Trainer or a Fitness Enthusiast?");
-	Label aLabel = new Label("Are you an Admin?");
+        StackPane backButton = createBackButton();
+        backButton.setOnMouseClicked(e -> showHomePage());
+        createAccountLayout.add(backButton, 0, 0);
 
-	HBox loginButtons = new HBox(10, createEnthusiastBtn, createTrainerBtn);
-	loginButtons.setAlignment(Pos.CENTER);
+        Button createEnthusiastBtn = new Button("Fitness Enthusiast");
+        Button createTrainerBtn = new Button("Fitness Trainer");
+        Button createAdminBtn = new Button("Fitness Admin");
+        Label logo = new Label("Fitness Tracking App");
+        logo.setStyle("-fx-font-size: 24px; -fx-font-weight: bold;");
+        createAccountLayout.add(logo, 1, 0, 2,1);
+        Label description = new Label("Would you like to create an Account as a ");
+        Label description2 = new Label("Fitness Trainer or a Fitness Enthusiast?");
+        logo.setWrapText(true);
+        description.setWrapText(true);
+        description.setPrefWidth(400);
+        createAccountLayout.add(description2, 0, 2, 3,1);
+        createAccountLayout.add(description, 0, 1, 3, 1);
+        Label aLabel = new Label("Are you an Admin?");
 
-	VBox adminLoginLayout = new VBox(10, aLabel, createAdminBtn);
-	adminLoginLayout.setAlignment(Pos.CENTER);
+        HBox loginButtons = new HBox(10, createEnthusiastBtn, createTrainerBtn);
+        createAccountLayout.add(loginButtons, 0, 3, 3, 1);
 
-	createAccountLayout.setAlignment(Pos.CENTER);
-	createAccountLayout.getChildren().addAll(logo, description, loginButtons, adminLoginLayout);
+        VBox adminLoginLayout = new VBox(10, aLabel, createAdminBtn);
+        createAccountLayout.add(adminLoginLayout, 2, 4, 3, 1);
 
-	adminLoginLayout.setVisible(false);
+        adminLoginLayout.setVisible(false);
 
-	logo.setOnMouseClicked(event -> {
-	    logoClickCount++;
-	    if (logoClickCount == 3) {
-		adminLoginLayout.setVisible(true);
-		logoClickCount = 0;
-	    }
-	});
+        logo.setOnMouseClicked(event -> {
+            logoClickCount++;
+            if (logoClickCount == 3) {
+                adminLoginLayout.setVisible(true);
+                logoClickCount = 0;
+            }
+        });
 
-	createEnthusiastBtn.setOnAction(e -> {
-	    try{
-		LoginDAO loginDAO = new LoginDAO();
-		String username = ThisUser.getInstance().getCurrentUsername();
-		String password = ThisUser.getInstance().getCurrentPassword();
+        createEnthusiastBtn.setOnAction(e -> {
+            try{
+                LoginDAO loginDAO = new LoginDAO();
+                String username = ThisUser.getInstance().getCurrentUsername();
+                String password = ThisUser.getInstance().getCurrentPassword();
 
-		if(username == null || username.isEmpty() || password == null || password.isEmpty()) {
-		    System.out.println("username or password cannot be empty");
-		}
+                if(username == null || username.isEmpty() || password == null || password.isEmpty()) {
+                    System.out.println("username or password cannot be empty");
+                }
 
-		boolean userExist = loginDAO.duplicateEnthusiast(username);
+                boolean userExist = loginDAO.duplicateEnthusiast(username);
 
-		if(!userExist){
-		    Users newEnthusiast = new Users(username, password);
-		    loginDAO.createEnthusiast(newEnthusiast);
-		    System.out.println("Successful");
-		    showEnthusiastPage();
-		} else{
-		    Alert alert = new Alert(Alert.AlertType.ERROR);
-		    alert.setTitle("Error");
-		    alert.setHeaderText(null);
-		    alert.setContentText("Username already exists");
-		    alert.showAndWait();
-		}
-	    } catch (Exception ex){
-		System.out.println("Enthusiast account cannot be created: " + ex.getMessage());
-	    }
-	});
+                if(!userExist){
+                    Users newEnthusiast = new Users(username, password);
+                    loginDAO.createEnthusiast(newEnthusiast);
+                    System.out.println("Successful");
+                    showEnthusiastPage();
+                } else{
+                    Alert alert = new Alert(Alert.AlertType.ERROR);
+                    alert.setTitle("Error");
+                    alert.setHeaderText(null);
+                    alert.setContentText("Username already exists");
+                    alert.showAndWait();
+                }
+            } catch (Exception ex){
+                System.out.println("Enthusiast account cannot be created: " + ex.getMessage());
+            }
+        });
 
-	createTrainerBtn.setOnAction(e -> {
-	    try{
-		LoginDAO loginDAO = new LoginDAO();
-		String username = ThisUser.getInstance().getCurrentUsername();
-		String password = ThisUser.getInstance().getCurrentPassword();
+        createTrainerBtn.setOnAction(e -> {
+            try{
+                LoginDAO loginDAO = new LoginDAO();
+                String username = ThisUser.getInstance().getCurrentUsername();
+                String password = ThisUser.getInstance().getCurrentPassword();
 
-		if(username == null || username.isEmpty() || password == null || password.isEmpty()) {
-		    System.out.println("username or password cannot be empty");
-		}
+                if(username == null || username.isEmpty() || password == null || password.isEmpty()) {
+                    System.out.println("username or password cannot be empty");
+                }
 
-		boolean userExist = loginDAO.duplicateTrainer(username);
+                boolean userExist = loginDAO.duplicateTrainer(username);
 
-		if(!userExist){
-		    Users newTrainer = new Users(username, password);
-		    loginDAO.createTrainer(newTrainer);
-		    System.out.println("Successful");
-		    showTrainerPage();
-		} else{
-		    Alert alert = new Alert(Alert.AlertType.ERROR);
-		    alert.setTitle("Error");
-		    alert.setHeaderText(null);
-		    alert.setContentText("Username already exists");
-		    alert.showAndWait();
-		}
-	    } catch (Exception ex){
-		System.out.println("Trainer account cannot be created: " + ex.getMessage());
-	    }
-	});
+                if(!userExist){
+                    Users newTrainer = new Users(username, password);
+                    loginDAO.createTrainer(newTrainer);
+                    System.out.println("Successful");
+                    showTrainerPage();
+                } else{
+                    Alert alert = new Alert(Alert.AlertType.ERROR);
+                    alert.setTitle("Error");
+                    alert.setHeaderText(null);
+                    alert.setContentText("Username already exists");
+                    alert.showAndWait();
+                }
+            } catch (Exception ex){
+                System.out.println("Trainer account cannot be created: " + ex.getMessage());
+            }
+        });
 
-	createAdminBtn.setOnAction(e -> {
-	    try{
-		LoginDAO loginDAO = new LoginDAO();
-		String username = ThisUser.getInstance().getCurrentUsername();
-		String password = ThisUser.getInstance().getCurrentPassword();
+        createAdminBtn.setOnAction(e -> {
+            try{
+                LoginDAO loginDAO = new LoginDAO();
+                String username = ThisUser.getInstance().getCurrentUsername();
+                String password = ThisUser.getInstance().getCurrentPassword();
 
-		if(username == null || username.isEmpty() || password == null || password.isEmpty()) {
-		    System.out.println("username or password cannot be empty");
-		}
+                if(username == null || username.isEmpty() || password == null || password.isEmpty()) {
+                    System.out.println("username or password cannot be empty");
+                }
 
-		boolean userExist = loginDAO.duplicateAdmin(username);
+                boolean userExist = loginDAO.duplicateAdmin(username);
 
-		if(!userExist){
-		    Users newAdmin = new Users(username, password);
-		    loginDAO.createAdmin(newAdmin);
-		    System.out.println("Successful");
-		    showAdminPage(username);
-		} else{
-		    Alert alert = new Alert(Alert.AlertType.ERROR);
-		    alert.setTitle("Error");
-		    alert.setHeaderText(null);
-		    alert.setContentText("Username already exists");
-		    alert.showAndWait();
-		}
-	    } catch (Exception ex){
-		System.out.println("Admin account cannot be created: " + ex.getMessage());
-	    }
-	});
+                if(!userExist){
+                    Users newAdmin = new Users(username, password);
+                    loginDAO.createAdmin(newAdmin);
+                    System.out.println("Successful");
+                    showAdminPage(username);
+                } else{
+                    Alert alert = new Alert(Alert.AlertType.ERROR);
+                    alert.setTitle("Error");
+                    alert.setHeaderText(null);
+                    alert.setContentText("Username already exists");
+                    alert.showAndWait();
+                }
+            } catch (Exception ex){
+                System.out.println("Admin account cannot be created: " + ex.getMessage());
+            }
+        });
 
-	Scene createAccountScene = new Scene(createAccountLayout, 600, 800);
-	primaryStage.setScene(createAccountScene);
+        Scene createAccountScene = new Scene(createAccountLayout, 600, 800);
+        primaryStage.setScene(createAccountScene);
     }
 
     private void showForgotPasswordPage() {
-	VBox forgotPasswordLayout = createPage("Forgot Password Page");
-	Label logo = new Label("Fitness Tracking App");
-	logo.setStyle("-fx-font-size: 24px; -fx-font-weight: bold;");
+        GridPane forgotPasswordLayout = new GridPane();
+        forgotPasswordLayout.setAlignment(Pos.CENTER);
+        forgotPasswordLayout.setHgap(10);
+        forgotPasswordLayout.setVgap(10);
 
-	Label usernameLabel = new Label("Username: ");
-	TextField usernameField = new TextField();
-	Label birthdayLabel = new Label("Birthday: ");
-	TextField birthdayField = new TextField();
-	Label passwordLabel = new Label("New Password: ");
-	PasswordField passwordField = new PasswordField();
-	Button resetPasswordBtn = new Button("Reset Password");
+        Label title = new Label("Forgot Password Page");
 
-	resetPasswordBtn.setOnAction(e -> {
-	    String username = usernameField.getText();
-	    String birthday = birthdayField.getText();
-	    String newPassword = passwordField.getText();
-	    try {
-		LoginDAO loginDAO = new LoginDAO();
-		boolean successful = loginDAO.forgetPassword(username, birthday, newPassword);
-		if(successful) {
-		    Alert alert = new Alert(Alert.AlertType.INFORMATION);
-		    alert.setTitle("Success");
-		    alert.setHeaderText(null);
-		    alert.setContentText("Password changed successfully");
-		    alert.showAndWait();
-		    showHomePage();
-		} else {
-		    Alert alert = new Alert(Alert.AlertType.ERROR);
-		    alert.setTitle("Error");
-		    alert.setHeaderText(null);
-		    alert.setContentText("Password change failed");
-		    alert.showAndWait();
-		}
-	    } catch (Exception ex){
-		System.out.println(ex.getMessage());
-	    }
-	});
+        Label usernameLabel = new Label("Username: ");
+        TextField usernameField = new TextField();
+        Label birthdayLabel = new Label("Birthday: ");
+        TextField birthdayField = new TextField();
+        Label passwordLabel = new Label("New Password: ");
+        PasswordField passwordField = new PasswordField();
+        Button resetPasswordBtn = new Button("Reset Password");
 
-	forgotPasswordLayout.setAlignment(Pos.CENTER);
-	forgotPasswordLayout.setPadding(new Insets(20));
+        StackPane backButton = createBackButton();
+        backButton.setOnMouseClicked(e -> showHomePage());
 
-	HBox usernameLine = new HBox(10, usernameLabel, usernameField);
-	usernameLine.setAlignment(Pos.CENTER);
-	HBox birthdayLine = new HBox(10, birthdayLabel, birthdayField);
-	birthdayLine.setAlignment(Pos.CENTER);
-	HBox newPasswordLine = new HBox(10, passwordLabel, passwordField);
-	newPasswordLine.setAlignment(Pos.CENTER);
-	HBox resetPasswordBtnLine = new HBox(10, resetPasswordBtn);
-	resetPasswordBtnLine.setAlignment(Pos.CENTER);
+        resetPasswordBtn.setOnAction(e -> {
+            String username = usernameField.getText();
+            String birthday = birthdayField.getText();
+            String newPassword = passwordField.getText();
 
-	forgotPasswordLayout.getChildren().addAll(
-		logo, usernameLine, birthdayLine, newPasswordLine, resetPasswordBtn
-		);
+            if(username.isEmpty() || birthday.isEmpty() || newPassword == null || newPassword.isEmpty()) {
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("Error");
+                alert.setHeaderText(null);
+                alert.setContentText("All fields cannot be empty");
+                alert.showAndWait();
+            }
+            try {
+                LoginDAO loginDAO = new LoginDAO();
+                boolean successful = loginDAO.forgetPassword(username, birthday, newPassword);
+                if(successful) {
+                    Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                    alert.setTitle("Success");
+                    alert.setHeaderText(null);
+                    alert.setContentText("Password changed successfully");
+                    alert.showAndWait();
+                    showHomePage();
+                } else {
+                    Alert alert = new Alert(Alert.AlertType.ERROR);
+                    alert.setTitle("Error");
+                    alert.setHeaderText(null);
+                    alert.setContentText("Password change failed");
+                    alert.showAndWait();
+                }
+            } catch (Exception ex){
+                System.out.println(ex.getMessage());
+            }
+        });
 
-	Scene forgotPasswordScene = new Scene(forgotPasswordLayout, 600, 800);
-	primaryStage.setScene(forgotPasswordScene);
+        forgotPasswordLayout.add(title, 1 ,1, 2, 1);
+        forgotPasswordLayout.add(usernameLabel, 0 ,2);
+        forgotPasswordLayout.add(usernameField, 1 ,2);
+        forgotPasswordLayout.add(birthdayLabel, 0 ,3);
+        forgotPasswordLayout.add(birthdayField, 1 ,3);
+        forgotPasswordLayout.add(passwordLabel, 0 ,4);
+        forgotPasswordLayout.add(passwordField, 1 ,4);
+        forgotPasswordLayout.add(resetPasswordBtn, 1 ,5, 2, 1);
+        forgotPasswordLayout.add(backButton, 0, 0);
+
+
+        Scene forgotPasswordScene = new Scene(forgotPasswordLayout, 600, 800);
+        primaryStage.setScene(forgotPasswordScene);
     }
 
 
@@ -822,7 +850,7 @@ public class FitnessTrackingApp extends Application {
 	primaryStage.setScene(workoutPlanScene);
     }
 
-    private void showSubscriptionsPage() {
+    private void showSubscriptionsPage() throws Exception {
 	VBox mainLayout = new VBox(10);
 	mainLayout.setPadding(new Insets(20));
 
@@ -939,17 +967,14 @@ public class FitnessTrackingApp extends Application {
 	}
     }
 
-    // to be implemented with database eventually
-    private List<String> getAvailableTrainers() {
-	// sample trainers for now, will be reaplced with real database trainers later
-	return FXCollections.observableArrayList(
-		"Trainer1",
-		"Trainer2",
-		"Trainer3",
-		"Trainer4",
-		"Trainer5"
-		);
+   
+    
+    private List<String> getAvailableTrainers() throws Exception {
+        LoginDAO loginDAO = new LoginDAO();
+        return loginDAO.getAllTrainerUsernames();
     }
+    
+    
 
 
     private void showProfileManagementUserPage() {
@@ -1335,19 +1360,18 @@ public class FitnessTrackingApp extends Application {
     }
 
     private VBox createPage(String pageTitle) {
+        StackPane backButton = createBackButton();
+        backButton.setOnMouseClicked(e -> showHomePage());
 
-	StackPane backButton = createBackButton();
-	backButton.setOnMouseClicked(e -> showTrainerPage());
+        Label pageLabel = new Label(pageTitle);
+        pageLabel.setStyle("-fx-font-size: 20px;");
 
-	Label pageLabel = new Label(pageTitle);
-	pageLabel.setStyle("-fx-font-size: 20px;");
+        VBox pageLayout = new VBox(10, backButton, pageLabel);
+        pageLayout.setAlignment(Pos.CENTER);
+        pageLayout.setPadding(new Insets(20));
 
-	VBox pageLayout = new VBox(10, backButton, pageLabel);
-	pageLayout.setAlignment(Pos.CENTER);
-	pageLayout.setPadding(new Insets(20));
-
-	return pageLayout;
-    } 
+        return pageLayout;
+    }
 
     // Method to create the back button with a triangle icon
     private StackPane createBackButton() {
